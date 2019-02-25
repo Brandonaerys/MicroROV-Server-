@@ -1,6 +1,6 @@
 import socketio
 import time
-from tkinter import *
+import tkinter as tk
 
 sio = socketio.Client()
 
@@ -19,27 +19,27 @@ def on_disconnect():
 
 @sio.on('SpeedReport')
 def ReportSpeed(Speed):
-    print(Speed)
+    print('Current Speed:', Speed)
 
 sio.connect('http://localhost:5000')
 
 
 
-def speedup(event):
+def SpeedUp(event):
     sio.emit('SpeedChange', 1)
 
-def speeddown(event):
+def SpeedDown(event):
     sio.emit('SpeedChange', -1)
 
-def exit(event):
+def Exit(event):
     pass
+# sio.wait()
 
-
-widget = Button(None, text='Input')
+widget = tk.Button(None, text='Input')
 widget.pack()
-widget.bind('<Button-1>', speedup)
-widget.bind('<Button-3>', speeddown)
-widget.bind('<Button-2>', exit)
+widget.bind('<Button-1>', SpeedUp)
+widget.bind('<Button-3>', SpeedDown)
+widget.bind('<Button-2>', Exit)
 widget.mainloop()
 
 sio.wait()

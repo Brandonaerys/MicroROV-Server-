@@ -1,21 +1,19 @@
-from tkinter import *
+import tkinter as tk
 
-def click(event):
-    print("Single Click, Button-l")
 
-def speedup(event):
-    sio.emit('SpeedChange', 1)
 
-def speeddown(event):
-    sio.emit('SpeedChange', -1)
+def SpeedUp(event):
+    print("Speed +1")
 
-def exit(event):
+def SpeedDown(event):
+    print("Speed -1")
+
+def Exit(event):
     pass
 
-
-widget = Button(None, text='Mouse Clicks')
+widget = tk.Button(None, text='Input')
 widget.pack()
-widget.bind('w', speedup)
-widget.bind('s', speeddown)
-widget.bind('q', exit)
+widget.bind('<Button-1>', SpeedUp)
+widget.bind('<Button-3>', SpeedDown)
+widget.bind('<Button-2>', Exit)
 widget.mainloop()

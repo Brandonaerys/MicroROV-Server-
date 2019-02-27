@@ -53,9 +53,9 @@ def message(sid, data):
         global Speed
         Speed += change
         if Speed < 0:
-            Speed = math.ceil(Speed)
+            Speed = (math.ceil(Speed * 10)) / 10
         else:
-            Speed = math.floor(Speed)
+            Speed = (math.floor(Speed * 10)) / 10
         sio.emit('SpeedReport', Speed)
     print(Speed)
     Output = Speed2Pulse(Speed)

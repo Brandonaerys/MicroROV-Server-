@@ -21,7 +21,7 @@ def on_disconnect():
 def ReportSpeed(Speed):
     print('Current Speed:', Speed)
 
-sio.connect('http://192.168.69.2')
+sio.connect('http://192.168.69.2:5000')
 
 
 

@@ -2,7 +2,7 @@ import socketio
 import time
 import engineio
 import eventlet
-
+import math
 # global Speed
 Speed = 0
 
@@ -31,6 +31,10 @@ def message(sid, data):
         change = 0.1 * data
         global Speed
         Speed += change
+        if Speed < 0:
+            Speed = math.ceil(Speed)
+        else:
+            Speed = math.floor(Speed)
         sio.emit('SpeedReport', Speed)
     print(Speed)
 

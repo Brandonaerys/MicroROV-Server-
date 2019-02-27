@@ -23,15 +23,16 @@ def Echo(sid, data):
 
 @sio.on('SpeedChange')
 def message(sid, data):
-    if (data > 0) and (Speed >= 1):
+    if (data > 0) and (Speed >= 10):
         sio.emit('SpeedReport', Speed)
-    elif (data < 0) and (Speed <= -1):
+    elif (data < 0) and (Speed <= -10):
         sio.emit('SpeedReport', Speed)
     else:
-        difference = 0.1 * data
         global Speed
-        Speed += difference
-        sio.emit('SpeedReport', Speed)
+        global Output
+        Speed += data
+        Output = 0.1 *  Speed
+        sio.emit('SpeedReport', Output)
     print(Speed)
 
 @sio.on('disconnect')

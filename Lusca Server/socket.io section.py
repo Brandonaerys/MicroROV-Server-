@@ -8,14 +8,14 @@ import RPi.GPIO as gpio
 try:
     # global Speed
     Speed = 0
-
+    def Speed2Pulse(Speed):
+        Range = Speed * 0.02
+        Pulse = Range + 1.5
+        return Pulse
     def Pulse2DC(Pulse):
     	DC = Pulse * 5
     	return DC
-    def Speed2Pulse(Speed):
-        Range = Speed * 0.4
-        Pulse = Range + 1.5
-        return Pulse
+
 
     ServoPIN = 3
     gpio.setmode(gpio.BCM)
@@ -45,19 +45,14 @@ try:
 
     @sio.on('SpeedChange')
     def message(sid, data):
-        if (data > 0) and (Speed >= 1):
+        if (data > 0) and (Speed >= 10):
             sio.emit('SpeedReport', Speed)
-        elif (data < 0) and (Speed <= -1):
+        elif (data < 0) and (Speed <= -10):
             sio.emit('SpeedReport', Speed)
         else:
-            change = 0.1 * data
             global Speed
-            Speed += change
-            if Speed < 0:
-                Speed = (math.ceil(Speed * 10)) / 10
-            else:
-                Speed = (math.floor(Speed * 10)) / 10
-            sio.emit('SpeedReport', Speed)
+            Speed += data
+            sio.emit('SpeedReport', Speed / 10)
         print(Speed)
         Output = Speed2Pulse(Speed)
         DC = Pulse2DC(Output)

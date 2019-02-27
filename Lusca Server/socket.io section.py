@@ -3,6 +3,8 @@ import time
 import engineio
 import eventlet
 import math
+import RPi.GPIO as gpio
+
 # global Speed
 Speed = 0
 

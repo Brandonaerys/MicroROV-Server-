@@ -52,7 +52,7 @@ try:
         else:
             global Speed
             Speed += data
-            sio.emit('SpeedReport', Speed / 10)
+            sio.emit('SpeedReport', Speed)
         print(Speed)
         Output = Speed2Pulse(Speed)
         DC = Pulse2DC(Output)

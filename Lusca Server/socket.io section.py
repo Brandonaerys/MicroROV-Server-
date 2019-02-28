@@ -66,5 +66,5 @@ try:
 
     eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
 except KeyboardInterrupt:
-        pwm.stop()
-        gpio.cleanup()
+    pwm.stop()
+    gpio.cleanup()

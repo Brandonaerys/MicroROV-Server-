@@ -35,6 +35,8 @@ def Exit(event):
     pass
 # sio.wait()
 
+
+
 widget = tk.Button(None, text='Input')
 widget.pack()
 widget.bind('<Button-1>', SpeedUp)

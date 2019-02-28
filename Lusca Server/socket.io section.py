@@ -9,7 +9,7 @@ try:
     # global Speed
     Speed = 0
     def Speed2Pulse(Speed):
-        Range = Speed * 0.5 * 0.4
+        Range = Speed * 0.1 * 0.4
         Pulse = Range + 1.5
         return Pulse
     def Pulse2DC(Pulse):

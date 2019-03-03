@@ -89,5 +89,7 @@ try:
     address = ('', 8000)
     server = StreamingServer(address, StreamingHandler)
     server.serve_forever()
+except KeyboardInterrupt:
+    camera.stop_recording()
 finally:
     camera.stop_recording()

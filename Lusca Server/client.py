@@ -2,6 +2,7 @@ import socketio
 import time
 import tkinter as tk
 
+master = tk.Tk()
 sio = socketio.Client()
 
 @sio.on('connect')
@@ -32,7 +33,7 @@ def SpeedDown(event):
     sio.emit('SpeedChange', -1)
 
 def ChangeSpeed(event):
-    sio.emit("SpeedSnap", int(event))
+    sio.emit("SpeedSnap", int(event) - 2)
 
 def Exit(event):
     pass
@@ -40,13 +41,13 @@ def Exit(event):
 
 
 
-widget = tk.Button(master, text='SpeedUp = Mouse1, SpeedDown = Mouse2')
-widget.pack()
+# widget = tk.Button(master, text='SpeedUp = Mouse1, SpeedDown = Mouse2')
+# widget.pack()
+# widget.bind('<Button-1>', SpeedUp)
+# widget.bind('<Button-3>', SpeedDown)
+# widget.bind('<Button-2>', Exit)
 slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed)
 slider.pack()
-widget.bind('<Button-1>', SpeedUp)
-widget.bind('<Button-3>', SpeedDown)
-widget.bind('<Button-2>', Exit)
 master.mainloop()
 
 sio.wait()

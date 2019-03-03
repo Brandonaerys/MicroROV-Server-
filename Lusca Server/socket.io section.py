@@ -57,7 +57,7 @@ try:
         Output = Speed2Pulse(Speed)
         DC = Pulse2DC(Output)
         pwm.ChangeDutyCycle(DC)
-
+        print(Output)
     @sio.on('SpeedSnap')
     def ChangeSpeed(sid, data):
         global Speed
@@ -67,6 +67,7 @@ try:
         Output = Speed2Pulse(Speed)
         DC = Pulse2DC(Output)
         pwm.ChangeDutyCycle(DC)
+        print(Output)
 
     @sio.on('disconnect')
     def disconnect(sid):

@@ -6,7 +6,7 @@ import math
 import RPi.GPIO as gpio
 
 try:
-    # global Speed
+    global Speed
     Speed = 0
     def Speed2Pulse(Speed):
         Range = Speed * 0.1 * 0.4
@@ -53,6 +53,16 @@ try:
             global Speed
             Speed += data
             sio.emit('SpeedReport', Speed)
+        print(Speed)
+        Output = Speed2Pulse(Speed)
+        DC = Pulse2DC(Output)
+        pwm.ChangeDutyCycle(DC)
+
+    @sio.on('SpeedSnap')
+    def ChangeSpeed(sid, data):
+        global Speed
+        Speed = data
+        sio.emit('SpeedReport', Speed)
         print(Speed)
         Output = Speed2Pulse(Speed)
         DC = Pulse2DC(Output)

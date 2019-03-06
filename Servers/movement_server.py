@@ -43,21 +43,21 @@ try:
     def Echo(sid, data):
         sio.emit('EchoData', data)
 
-    @sio.on('SpeedChange')
-    def message(sid, data):
-        if (data > 0) and (Speed >= 10):
-            sio.emit('SpeedReport', Speed)
-        elif (data < 0) and (Speed <= -10):
-            sio.emit('SpeedReport', Speed)
-        else:
-            global Speed
-            Speed += data
-            sio.emit('SpeedReport', Speed)
-        print(Speed)
-        Output = Speed2Pulse(Speed)
-        DC = Pulse2DC(Output)
-        pwm.ChangeDutyCycle(DC)
-        print(Output)
+    # @sio.on('SpeedChange')
+    # def message(sid, data):
+    #     if (data > 0) and (Speed >= 10):
+    #         sio.emit('SpeedReport', Speed)
+    #     elif (data < 0) and (Speed <= -10):
+    #         sio.emit('SpeedReport', Speed)
+    #     else:
+    #         global Speed
+    #         Speed += data
+    #         sio.emit('SpeedReport', Speed)
+    #     print(Speed)
+    #     Output = Speed2Pulse(Speed)
+    #     DC = Pulse2DC(Output)
+    #     pwm.ChangeDutyCycle(DC)
+    #     print(Output)
     @sio.on('SpeedSnap')
     def ChangeSpeed(sid, data):
         global Speed

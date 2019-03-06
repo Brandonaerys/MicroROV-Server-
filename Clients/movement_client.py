@@ -26,11 +26,11 @@ sio.connect('http://192.168.69.2:5000')
 
 
 
-def SpeedUp(event):
-    sio.emit('SpeedChange', 1)
-
-def SpeedDown(event):
-    sio.emit('SpeedChange', -1)
+# def SpeedUp(event):
+#     sio.emit('SpeedChange', 1)
+#
+# def SpeedDown(event):
+#     sio.emit('SpeedChange', -1)
 
 def ChangeSpeed(event):
     sio.emit("SpeedSnap", int(event) - 2)

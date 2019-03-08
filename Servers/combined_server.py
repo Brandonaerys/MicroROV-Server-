@@ -79,7 +79,6 @@ def PinOutput():
     def disconnect(sid):
         print('disconnect ', sid)
 
-    eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
 
 PAGE="""\
 <html>
@@ -160,9 +159,11 @@ camera.start_recording(output, format='mjpeg')
 
 try:
     PinOutput()
+    print('socket io started')
     address = ('', 8000)
     server = StreamingServer(address, StreamingHandler)
     server.serve_forever()
+    eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
 except KeyboardInterrupt:
     pwm.stop()
     gpio.cleanup()

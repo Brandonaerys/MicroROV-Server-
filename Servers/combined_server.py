@@ -13,6 +13,7 @@ from http import server
 
 
 global Speed
+
 Speed = 0
 def Speed2Pulse(Speed):
     Range = Speed * 0.1 * 0.4
@@ -34,63 +35,10 @@ def PinOutput():
     Center = Pulse2DC(1.5)
     pwm.start(Center)
 
-    sio = socketio.Server()
-
-    app = socketio.WSGIApp(sio, static_files={
-        '/': {'content_type': 'text/html', 'filename': 'index.html'}
-    })
 
 
-    @sio.on('connect')
-    def connect(sid, environ):
-        print('connect ', sid)
-
-    @sio.on('ServerEchoTest')
-    def Echo(sid, data):
-        sio.emit('EchoData', data)
-
-    # @sio.on('SpeedChange')
-    # def message(sid, data):
-    #     if (data > 0) and (Speed >= 10):
-    #         sio.emit('SpeedReport', Speed)
-    #     elif (data < 0) and (Speed <= -10):
-    #         sio.emit('SpeedReport', Speed)
-    #     else:
-    #         global Speed
-    #         Speed += data
-    #         sio.emit('SpeedReport', Speed)
-    #     print(Speed)
-    #     Output = Speed2Pulse(Speed)
-    #     DC = Pulse2DC(Output)
-    #     pwm.ChangeDutyCycle(DC)
-    #     print(Output)
-    @sio.on('SpeedSnap')
-    def ChangeSpeed(sid, data):
-        global Speed
-        Speed = data
-        sio.emit('SpeedReport', Speed)
-        print(Speed)
-        Output = Speed2Pulse(Speed)
-        DC = Pulse2DC(Output)
-        pwm.ChangeDutyCycle(DC)
-        print(Output)
-
-    @sio.on('disconnect')
-    def disconnect(sid):
-        print('disconnect ', sid)
 
 
-PAGE="""\
-<html>
-<head>
-<title>Raspberry Pi Camera Stream</title>
-</head>
-<body>
-<center><h1>Raspberry Pi Camera Stream</h1></center>
-<center><img src="stream.mjpg" width="640" height="480"></center>
-</body>
-</html>
-"""
 
 class StreamingOutput(object):
     def __init__(self):
@@ -111,18 +59,7 @@ class StreamingOutput(object):
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path == '/':
-            self.send_response(301)
-            self.send_header('Location', '/index.html')
-            self.end_headers()
-        elif self.path == '/index.html':
-            content = PAGE.encode('utf-8')
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.send_header('Content-Length', len(content))
-            self.end_headers()
-            self.wfile.write(content)
-        elif self.path == '/stream.mjpg':
+        if self.path == '/stream.mjpg':
             self.send_response(200)
             self.send_header('Age', 0)
             self.send_header('Cache-Control', 'no-cache, private')
@@ -145,25 +82,54 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     'Removed streaming client %s: %s',
                     self.client_address, str(e))
         else:
-            self.send_error(404)
-            self.end_headers()
+            # pass to socket.io
+            print(sio)
 
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-camera = picamera.PiCamera(resolution='640x640', framerate=15)
+camera = picamera.PiCamera(resolution='480x480', framerate=24)
 output = StreamingOutput()
 camera.rotation = 90
 camera.start_recording(output, format='mjpeg')
 
 try:
     PinOutput()
+
+    sio = socketio.Server()
+
+    # app = socketio.WSGIApp(sio, wsgi_app=test_wsgi_app)
+
+    @sio.on('connect')
+    def connect(sid, environ):
+        print('connect ', sid)
+
+    @sio.on('ServerEchoTest')
+    def Echo(sid, data):
+        sio.emit('EchoData', data)
+
+    @sio.on('SpeedSnap')
+    def ChangeSpeed(sid, data):
+        global Speed
+        Speed = data
+        sio.emit('SpeedReport', Speed)
+        print(Speed)
+        Output = Speed2Pulse(Speed)
+        DC = Pulse2DC(Output)
+        pwm.ChangeDutyCycle(DC)
+        print(Output)
+
+    @sio.on('disconnect')
+    def disconnect(sid):
+        print('disconnect ', sid)
+
+    #eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
     print('socket io started')
     address = ('', 8000)
     server = StreamingServer(address, StreamingHandler)
     server.serve_forever()
-    eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
+
 except KeyboardInterrupt:
     pwm.stop()
     gpio.cleanup()

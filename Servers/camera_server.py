@@ -8,6 +8,7 @@ import logging
 import socketserver
 from threading import Condition
 from http import server
+import re
 
 PAGE="""\
 <html>
@@ -20,6 +21,8 @@ PAGE="""\
 </body>
 </html>
 """
+
+regex = r"/wb/(?P<red>\d(\.\d+)?)/(?P<blue>\d(\.\d+)?)"
 
 class StreamingOutput(object):
     def __init__(self):
@@ -63,6 +66,33 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
+                    camera.awb_gains = (1.4, 1.0)
+                    self.wfile.write(b'--FRAME\r\n')
+                    self.send_header('Content-Type', 'image/jpeg')
+                    self.send_header('Content-Length', len(frame))
+                    self.end_headers()
+                    self.wfile.write(frame)
+                    self.wfile.write(b'\r\n')
+            except Exception as e:
+                logging.warning(
+                    'Removed streaming client %s: %s',
+                    self.client_address, str(e))
+        elif self.path.startswith('/wb/'):
+            self.send_response(200)
+            self.send_header('Age', 0)
+            self.send_header('Cache-Control', 'no-cache, private')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Content-Type', 'multipart/x-mixed-replace; boundary=FRAME')
+            self.end_headers()
+            matObj = re.match(regex, self.path, flags = 0)
+            Red = float(matObj.group("red"))
+            Blue = float(matObj.group("blue"))
+            try:
+                while True:
+                    with output.condition:
+                        output.condition.wait()
+                        frame = output.frame
+                    camera.awb_gains = (Red, Blue)
                     self.wfile.write(b'--FRAME\r\n')
                     self.send_header('Content-Type', 'image/jpeg')
                     self.send_header('Content-Length', len(frame))
@@ -82,6 +112,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     daemon_threads = True
 
 camera = picamera.PiCamera(resolution='640x640', framerate=15)
+camera.awb_mode = 'off'
 output = StreamingOutput()
 camera.rotation = 90
 camera.start_recording(output, format='mjpeg')

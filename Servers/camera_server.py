@@ -66,7 +66,6 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     with output.condition:
                         output.condition.wait()
                         frame = output.frame
-                    camera.awb_gains = (1.4, 1.0)
                     self.wfile.write(b'--FRAME\r\n')
                     self.send_header('Content-Type', 'image/jpeg')
                     self.send_header('Content-Length', len(frame))
@@ -113,6 +112,7 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
 
 camera = picamera.PiCamera(resolution='640x640', framerate=15)
 camera.awb_mode = 'off'
+camera.awb_gains = (1.0, 1.0)
 output = StreamingOutput()
 camera.rotation = 90
 camera.start_recording(output, format='mjpeg')

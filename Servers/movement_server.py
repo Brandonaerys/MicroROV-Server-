@@ -17,7 +17,7 @@ try:
     	return DC
 
 
-    ServoPIN = 4
+    ServoPIN = 17
     gpio.setmode(gpio.BCM)
     gpio.setup(ServoPIN, gpio.OUT)
 

@@ -72,7 +72,11 @@ if __name__ == '__main__':
         @sio.on("BrightnessChange")
         def Brightness(sid, data):
             LED_BRIGHTNESS = EchoData
+            strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
+            strip.begin()
             WhiteColor(strip)
+
+
         # @sio.on('SpeedChange')
         # def message(sid, data):
         #     if (data > 0) and (Speed >= 10):

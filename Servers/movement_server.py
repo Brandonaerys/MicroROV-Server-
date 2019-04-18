@@ -54,6 +54,8 @@ if __name__ == '__main__':
         Center = Pulse2DC(1.5)
         pwm.start(Center)
 
+        strip.show()
+
         sio = socketio.Server()
 
         app = socketio.WSGIApp(sio, static_files={

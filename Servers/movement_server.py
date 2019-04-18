@@ -30,6 +30,7 @@ if __name__ == '__main__':
 
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     strip.begin()
+    WhiteColor(strip)
     print('Ctrl+C to quit.')
     try:
         global Speed
@@ -73,10 +74,9 @@ if __name__ == '__main__':
 
         @sio.on("BrightnessChange")
         def Brightness(sid, data):
-            LED_BRIGHTNESS = data
-            strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
-            strip.begin()
-            WhiteColor(strip)
+            for i in range (strip.numPixels()):
+                strip.setPixelColor(i, Color(data,data,data))
+                strip.show()
 
 
         # @sio.on('SpeedChange')

@@ -14,9 +14,9 @@ LED_INVERT     = False   # True to invert the signal (when using NPN transistor 
 LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 # Animation functions
-def WhiteColor(strip):
+def WhiteColor(strip,brightness):
     for i in range(strip.numPixels()):
-        strip.setPixelColor(i, Color(255,255,255))
+        strip.setPixelColor(i, Color(brightness,brightness,brightness))
         strip.show()
 
 if __name__ == '__main__':
@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     try:
         while True:
-            WhiteColor(strip)
+            brightness = int(input("enter brightness:"))
+            WhiteColor(strip, brightness)
 
     except KeyboardInterrupt:
         if args.clear:

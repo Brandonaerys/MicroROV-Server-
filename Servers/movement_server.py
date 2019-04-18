@@ -19,7 +19,8 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 # Animation functions
 def WhiteColor(strip):
     for i in range(strip.numPixels()):
-        strip.setPixelColor(i, Color(255,255,255))
+	# Green, Red, Blue
+        strip.setPixelColor(i, Color(0, 1, 0))
         strip.show()
 
 if __name__ == '__main__':
@@ -35,9 +36,12 @@ if __name__ == '__main__':
     try:
         global Speed
         Speed = 0
+        global Center
+        Center = 1.42
         def Speed2Pulse(Speed):
             Range = Speed * 0.1 * 0.4
-            Pulse = Range + 1.5
+
+            Pulse = Range + Center
             return Pulse
         def Pulse2DC(Pulse):
         	DC = Pulse * 5
@@ -50,10 +54,7 @@ if __name__ == '__main__':
 
         pwm = gpio.PWM(ServoPIN, 50)
         #length measured in milliseconds
-        Min = Pulse2DC(1.1)
-        Max = Pulse2DC(1.9)
-        Center = Pulse2DC(1.5)
-        pwm.start(Center)
+        pwm.start(Pulse2DC(Center))
 
         strip.show()
 
@@ -108,9 +109,6 @@ if __name__ == '__main__':
         @sio.on('disconnect')
         def disconnect(sid):
             print('disconnect ', sid)
-
-
-
         eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
     except KeyboardInterrupt:
         pwm.stop()

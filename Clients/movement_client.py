@@ -23,7 +23,7 @@ def on_disconnect():
 def ReportSpeed(Speed):
     print('Current Speed:', Speed)
 
-sio.connect('http://192.168.0.234:5000')
+sio.connect('http://192.168.69.2:5000')
 
 
 
@@ -34,7 +34,7 @@ sio.connect('http://192.168.0.234:5000')
 #     sio.emit('SpeedChange', -1)
 
 def ChangeSpeed(event):
-    sio.emit("SpeedSnap", int(event) - 2)
+    sio.emit("SpeedSnap", int(event))
 
 def ChangeBrightness(event):
     sio.emit("BrightnessChange", int(event))

@@ -3,6 +3,8 @@ import time
 import tkinter as tk
 import cv2 as cv
 
+MICRO_ROV_SERVER_NAME = "http://192.168.69.2"
+
 master = tk.Tk()
 master.title("MicroROV")
 WhiteBalance = tk.Tk()
@@ -27,7 +29,7 @@ def on_disconnect():
 def ReportSpeed(Speed):
     print('Current Speed:', Speed)
 
-sio.connect('http://192.168.69.2:5000')
+sio.connect(MICRO_ROV_SERVER_NAME + ":5000")
 
 
 
@@ -36,11 +38,13 @@ sio.connect('http://192.168.69.2:5000')
 #
 # def SpeedDown(event):
 #     sio.emit('SpeedChange', -1)
-URL_SERVER_NAME = "http://192.168.69.2:8000/wb/"
+URL_SERVER_NAME = MICRO_ROV_SERVER_NAME + ":8000/wb/"
+global Red
+global Blue
 Red = float(1.0)
 Blue = float(1.0)
 CameraStreamURL = URL_SERVER_NAME + str(Red) + "/" + str(Blue)
-cap = cv2.VideoCapture(CameraStreamURL)
+cap = cv.VideoCapture(CameraStreamURL)
 
 def ChangeSpeed(event):
     sio.emit("SpeedSnap", int(event))
@@ -49,45 +53,33 @@ def ChangeBrightness(event):
     sio.emit("BrightnessChange", int(event))
 
 def ChangeRed(event):
+    global Red
     Red = float(event)
     CameraStreamURL = URL_SERVER_NAME + str(Red) + "/" + str(Blue)
-    cap = cv2.VideoCapture(CameraStreamURL)
+    cap = cv.VideoCapture(CameraStreamURL)
+    print("RedChange:", event)
 
 def ChangeBlue(event):
+    global Blue
     Blue = float(event)
     CameraStreamURL = URL_SERVER_NAME + str(Red) + "/" + str(Blue)
-    cap = cv2.VideoCapture(CameraStreamURL)
+    cap = cv.VideoCapture(CameraStreamURL)
+    print("BlueChange:", event)
 
 
 def Exit(event):
     pass
-# sio.wait()
 
 
-
-# widget = tk.Button(master, text='SpeedUp = Mouse1, SpeedDown = Mouse2')
-# widget.pack()
-# widget.bind('<Button-1>', SpeedUp)
-# widget.bind('<Button-3>', SpeedDown)
-# widget.bind('<Button-2>', Exit)
 slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed, length = 200, width=40)
 slider.pack()
 brightness = tk.Scale(master, from_=0, to=255, command=ChangeBrightness, length = 300, width=40, orient=tk.HORIZONTAL)
 brightness.pack()
-WB_Red = tk.Scale(WhiteBalance, from_=4.0, to=0, command=, length = 300, width=40, resolution = 0.05)
+WB_Red = tk.Scale(WhiteBalance, from_=4.0, to=0, command=ChangeRed, length = 300, width=40, resolution = 0.05)
 WB_Red.pack()
-WB_Blue = tk.Scale(WhiteBalance, from_=4.0, to=0, command=, length = 300, width=40, resolution = 0.05)
+WB_Blue = tk.Scale(WhiteBalance, from_=4.0, to=0, command=ChangeBlue, length = 300, width=40, resolution = 0.05)
 WB_Blue.pack()
 master.mainloop()
 WhiteBalance.mainloop()
 
 sio.wait()
-
-
-while True:
-    ret, frame = cap.read()
-    cv.imshow(frame)
-    
-    key = cv.waitKey(1)
-    if key & 0xFF == ord('q'):
-        break

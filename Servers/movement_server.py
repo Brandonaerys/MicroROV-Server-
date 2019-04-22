@@ -99,16 +99,23 @@ if __name__ == '__main__':
         def ChangeSpeed(sid, data):
             global Speed
             Speed = data
-            sio.emit('SpeedReport', Speed)
+            sio.emit('Speed.Report', Speed)
             print(Speed)
             Output = Speed2Pulse(Speed)
             DC = Pulse2DC(Output)
             pwm.ChangeDutyCycle(DC)
-            print(Output)
 
         @sio.on('disconnect')
         def disconnect(sid):
             print('disconnect ', sid)
+            global Speed
+            Speed = 0
+            print(Speed)
+            Output = Speed2Pulse(Speed)
+            DC = Pulse2DC(Output)
+            pwm.ChangeDutyCycle(DC)
+
+
         eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
     except KeyboardInterrupt:
         pwm.stop()

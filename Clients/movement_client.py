@@ -1,9 +1,13 @@
 import socketio
 import time
 import tkinter as tk
+import cv2 as cv
 
 master = tk.Tk()
 master.title("MicroROV")
+WhiteBalance = tk.Tk()
+WhiteBalance.title("White Balance")
+
 sio = socketio.Client()
 
 @sio.on('connect')
@@ -32,12 +36,28 @@ sio.connect('http://192.168.69.2:5000')
 #
 # def SpeedDown(event):
 #     sio.emit('SpeedChange', -1)
+URL_SERVER_NAME = "http://192.168.69.2:8000/wb/"
+Red = float(1.0)
+Blue = float(1.0)
+CameraStreamURL = URL_SERVER_NAME + str(Red) + "/" + str(Blue)
+cap = cv2.VideoCapture(CameraStreamURL)
 
 def ChangeSpeed(event):
     sio.emit("SpeedSnap", int(event))
 
 def ChangeBrightness(event):
     sio.emit("BrightnessChange", int(event))
+
+def ChangeRed(event):
+    Red = float(event)
+    CameraStreamURL = URL_SERVER_NAME + str(Red) + "/" + str(Blue)
+    cap = cv2.VideoCapture(CameraStreamURL)
+
+def ChangeBlue(event):
+    Blue = float(event)
+    CameraStreamURL = URL_SERVER_NAME + str(Red) + "/" + str(Blue)
+    cap = cv2.VideoCapture(CameraStreamURL)
+
 
 def Exit(event):
     pass
@@ -54,6 +74,20 @@ slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed, length = 200, w
 slider.pack()
 brightness = tk.Scale(master, from_=0, to=255, command=ChangeBrightness, length = 300, width=40, orient=tk.HORIZONTAL)
 brightness.pack()
+WB_Red = tk.Scale(WhiteBalance, from_=4.0, to=0, command=, length = 300, width=40, resolution = 0.05)
+WB_Red.pack()
+WB_Blue = tk.Scale(WhiteBalance, from_=4.0, to=0, command=, length = 300, width=40, resolution = 0.05)
+WB_Blue.pack()
 master.mainloop()
+WhiteBalance.mainloop()
 
 sio.wait()
+
+
+while True:
+    ret, frame = cap.read()
+    cv.imshow(frame)
+    
+    key = cv.waitKey(1)
+    if key & 0xFF == ord('q'):
+        break

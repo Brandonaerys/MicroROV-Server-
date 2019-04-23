@@ -6,7 +6,7 @@ import cv2 as cv
 MICRO_ROV_SERVER_NAME = "http://192.168.69.2"
 
 master = tk.Tk()
-master.title("MicroROV")
+master.title("Thruster and Lights")
 WhiteBalance = tk.Tk()
 WhiteBalance.title("White Balance")
 
@@ -71,13 +71,13 @@ def Exit(event):
     pass
 
 
-slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed, length = 200, width=40)
+slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed, length = 200, width=40, label="Thruster/Movement, INVERTED")
 slider.pack()
-brightness = tk.Scale(master, from_=0, to=255, command=ChangeBrightness, length = 300, width=40, orient=tk.HORIZONTAL)
+brightness = tk.Scale(master, from_=0, to=255, command=ChangeBrightness, length = 300, width=40, orient=tk.HORIZONTAL, label="Camera Lights Brightness")
 brightness.pack()
-WB_Red = tk.Scale(WhiteBalance, from_=4.0, to=0, command=ChangeRed, length = 300, width=40, resolution = 0.05)
+WB_Red = tk.Scale(WhiteBalance, from_=4.0, to=0, command=ChangeRed, length = 300, width=40, resolution = 0.05, label="White Balance: RED")
 WB_Red.pack()
-WB_Blue = tk.Scale(WhiteBalance, from_=4.0, to=0, command=ChangeBlue, length = 300, width=40, resolution = 0.05)
+WB_Blue = tk.Scale(WhiteBalance, from_=4.0, to=0, command=ChangeBlue, length = 300, width=40, resolution = 0.05, label="White Balance: BLUE")
 WB_Blue.pack()
 master.mainloop()
 WhiteBalance.mainloop()

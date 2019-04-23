@@ -3,7 +3,7 @@ import numpy as np
 import datetime
 
 # Create a VideoCapture object
-cap = cv2.VideoCapture("http://192.168.0.234:8000/stream.mjpg")
+cap = cv2.VideoCapture("http://192.168.69.2:8000/stream.mjpg")
 
 # Check if camera opened successfully
 if (cap.isOpened() == False):

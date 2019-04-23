@@ -71,7 +71,7 @@ def Exit(event):
     pass
 
 
-slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed, length = 200, width=40, label="Thruster/Movement, INVERTED")
+slider = tk.Scale(master, from_=10, to=-10, command=ChangeSpeed, length = 200, width=40, label="Thruster/Movement, INVERTED, DOWN=backwards")
 slider.pack()
 brightness = tk.Scale(master, from_=0, to=255, command=ChangeBrightness, length = 300, width=40, orient=tk.HORIZONTAL, label="Camera Lights Brightness")
 brightness.pack()

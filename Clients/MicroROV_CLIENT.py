@@ -58,7 +58,7 @@ sio.connect(MICRO_ROV_SERVER_NAME + ":5000")
 
 
 def ChangeSpeed(event):
-    sio.emit("SpeedSnap", int(event))
+    sio.emit("SpeedSnap", -1 * int(event))
 
 def ChangeBrightness(event):
     sio.emit("BrightnessChange", int(event))
